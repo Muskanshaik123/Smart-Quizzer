@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Adaptive Quiz Generator</title>
+    <link rel="stylesheet" href="admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Navigation Sidebar -->
+    <nav class="admin-sidebar">
+        <div class="sidebar-header">
+            <div class="admin-logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>Admin Panel</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="admin-profile">
+                <div class="admin-avatar">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <div class="admin-info">
+                    <h3 id="adminName">Administrator</h3>
+                    <p id="adminRole">Super Admin</p>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-item active">
+                    <a href="#" class="nav-tab" data-tab="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="nav-tab" data-tab="users">
+                        <i class="fas fa-users"></i>
+                        <span>User Management</span>
+                        <span class="badge" id="usersCount">0</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="nav-tab" data-tab="quizzes">
+                        <i class="fas fa-brain"></i>
+                        <span>Quizzes Analytics</span>
+                        <span class="badge" id="quizzesCount">0</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="nav-tab" data-tab="certificates">
+                        <i class="fas fa-award"></i>
+                        <span>Certificates</span>
+                        <span class="badge" id="certificatesCount">0</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="nav-tab" data-tab="flagged">
+                        <i class="fas fa-flag"></i>
+                        <span>Flagged Questions</span>
+                        <span class="badge" id="flaggedCount">0</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="#" class="nav-tab" data-tab="analytics">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="adminLogout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="header-left">
+                <h1>Admin Dashboard</h1>
+                <p id="dashboardSubtitle">Welcome to the administration panel</p>
+            </div>
+            <div class="header-right">
+                <div class="admin-actions">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <select id="dateFilter" class="filter-select">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                    <button class="btn-primary" id="refreshData">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh Data
+                    </button>
+                    <div class="admin-notifications">
+                        <button class="btn-icon" id="notificationsBtn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-dot" id="notificationDot" style="display: none;"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="admin-content">
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content active">
+                <!-- Statistics Overview -->
+                <section class="stats-overview">
+                    <div class="stat-card primary">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-text" id="usersTrend">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card success">
+                        <div class="stat-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalQuizzes">0</h3>
+                            <p>Quizzes Taken</p>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-text" id="quizzesTrend">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card warning">
+                        <div class="stat-icon">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalCertificates">0</h3>
+                            <p>Certificates Issued</p>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-text" id="certificatesTrend">Loading...</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card info">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="avgScore">0%</h3>
+                            <p>Average Score</p>
+                        </div>
+                        <div class="stat-trend">
+                            <span class="trend-text" id="scoreTrend">Loading...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Leaderboard -->
+                <section class="chart-section">
+                    <div class="section-header">
+                        <h3>Leaderboard - Top 5 Users</h3>
+                        <button class="btn-link" id="refreshLeaderboard">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div class="leaderboard" id="leaderboardList">
+                        <div class="no-data">
+                            <i class="fas fa-user"></i>
+                            <p>No leaderboard data available</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Charts and Analytics -->
+                <div class="analytics-grid">
+                    <!-- User Growth Chart -->
+                    <section class="chart-section">
+                        <div class="section-header">
+                            <h3>User Growth</h3>
+                            <select id="userGrowthPeriod" class="period-select">
+                                <option value="7d">Last 7 Days</option>
+                                <option value="30d" selected>Last 30 Days</option>
+                                <option value="90d">Last 90 Days</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="userGrowthChart"></canvas>
+                            <div class="chart-placeholder" id="userGrowthPlaceholder">
+                                <i class="fas fa-chart-line"></i>
+                                <p>User growth data will appear here</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Quiz Performance Chart -->
+                    <section class="chart-section">
+                        <div class="section-header">
+                            <h3>Quiz Performance</h3>
+                            <select id="performancePeriod" class="period-select">
+                                <option value="7d">Last 7 Days</option>
+                                <option value="30d" selected>Last 30 Days</option>
+                                <option value="90d">Last 90 Days</option>
+                            </select>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="performanceChart"></canvas>
+                            <div class="chart-placeholder" id="performancePlaceholder">
+                                <i class="fas fa-chart-bar"></i>
+                                <p>Performance data will appear here</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Recent Activity -->
+                    <section class="activity-section">
+                        <div class="section-header">
+                            <h3>Recent Activity</h3>
+                            <button class="btn-link" id="viewAllActivity">View All</button>
+                        </div>
+                        <div class="activity-list" id="recentActivity">
+                            <div class="no-data">
+                                <i class="fas fa-clock"></i>
+                                <p>No recent activity</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Popular Topics -->
+                    <section class="topics-section">
+                        <div class="section-header">
+                            <h3>Popular Topics</h3>
+                            <button class="btn-link" id="refreshTopics">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <div class="topics-list" id="popularTopics">
+                            <div class="no-data">
+                                <i class="fas fa-tags"></i>
+                                <p>No topic data available</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Users Management Tab -->
+            <div id="usersTab" class="tab-content">
+                <section class="management-section">
+                    <div class="section-header">
+                        <h2>User Management</h2>
+                        <div class="section-actions">
+                            <div class="search-box small">
+                                <input type="text" id="userSearch" placeholder="Search users...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <button class="btn-outline" id="exportUsers">
+                                <i class="fas fa-download"></i>
+                                Export Users
+                            </button>
+                            <button class="btn-primary" id="addUser">
+                                <i class="fas fa-plus"></i>
+                                Add User
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-info">
+                        <span id="usersTableInfo">Showing 0 users</span>
+                    </div>
+
+                    <div class="users-table-container">
+                        <table class="users-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Joined</th>
+                                    <th>Quizzes</th>
+                                    <th>Avg Score</th>
+                                    <th>Time Spent</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="8" class="no-data">
+                                        <i class="fas fa-users"></i>
+                                        <p>No users found</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination" id="usersPagination">
+                        <button class="btn-pagination" id="usersPrev" disabled>Previous</button>
+                        <span class="pagination-info">Page 1 of 1</span>
+                        <button class="btn-pagination" id="usersNext" disabled>Next</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Quizzes Analytics Tab -->
+            <div id="quizzesTab" class="tab-content">
+                <section class="management-section">
+                    <div class="section-header">
+                        <h2>Quizzes Analytics</h2>
+                        <div class="section-actions">
+                            <div class="search-box small">
+                                <input type="text" id="quizSearch" placeholder="Search quizzes...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <button class="btn-outline" id="exportQuizzes">
+                                <i class="fas fa-download"></i>
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-info">
+                        <span id="quizzesTableInfo">Showing 0 quizzes</span>
+                    </div>
+
+                    <div class="quizzes-stats">
+                        <div class="quiz-stat-card">
+                            <h4>Most Popular Topics</h4>
+                            <div class="topics-list" id="popularTopicsQuiz">
+                                <div class="no-data">
+                                    <i class="fas fa-tags"></i>
+                                    <p>No quiz data available</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-stat-card">
+                            <h4>Difficulty Distribution</h4>
+                            <div class="chart-container small">
+                                <canvas id="difficultyChart"></canvas>
+                                <div class="chart-placeholder small">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <p>No data</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="quiz-stat-card">
+                            <h4>Question Types</h4>
+                            <div class="chart-container small">
+                                <canvas id="questionTypesChart"></canvas>
+                                <div class="chart-placeholder small">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <p>No data</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quizzes-table-container">
+                        <table class="quizzes-table" id="quizzesTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Title & Topic</th>
+                                    <th>User</th>
+                                    <th>Difficulty</th>
+                                    <th>Score</th>
+                                    <th>Time Taken</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quizzesTableBody">
+                                <tr>
+                                    <td colspan="8" class="no-data">
+                                        <i class="fas fa-file-alt"></i>
+                                        <p>No quizzes found</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination" id="quizzesPagination">
+                        <button class="btn-pagination" id="quizzesPrev" disabled>Previous</button>
+                        <span class="pagination-info">Page 1 of 1</span>
+                        <button class="btn-pagination" id="quizzesNext" disabled>Next</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Certificates Tab -->
+            <div id="certificatesTab" class="tab-content">
+                <section class="management-section">
+                    <div class="section-header">
+                        <h2>Certificates Issued</h2>
+                        <div class="section-actions">
+                            <div class="search-box small">
+                                <input type="text" id="certificateSearch" placeholder="Search certificates...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <button class="btn-outline" id="exportCertificates">
+                                <i class="fas fa-download"></i>
+                                Export Certificates
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-info">
+                        <span id="certificatesTableInfo">Showing 0 certificates</span>
+                    </div>
+
+                    <div class="certificates-table-container">
+                        <table class="certificates-table" id="certificatesTable">
+                            <thead>
+                                <tr>
+                                    <th>Certificate ID</th>
+                                    <th>Quiz Title</th>
+                                    <th>Topic</th>
+                                    <th>Score</th>
+                                    <th>Questions</th>
+                                    <th>Issued Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="certificatesTableBody">
+                                <tr>
+                                    <td colspan="7" class="no-data">
+                                        <i class="fas fa-award"></i>
+                                        <p>No certificates issued yet</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination" id="certificatesPagination">
+                        <button class="btn-pagination" id="certificatesPrev" disabled>Previous</button>
+                        <span class="pagination-info">Page 1 of 1</span>
+                        <button class="btn-pagination" id="certificatesNext" disabled>Next</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Flagged Questions Tab -->
+            <div id="flaggedTab" class="tab-content">
+                <section class="management-section">
+                    <div class="section-header">
+                        <h2>Flagged Questions</h2>
+                        <div class="section-actions">
+                            <div class="search-box small">
+                                <input type="text" id="flaggedSearch" placeholder="Search flagged questions...">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <button class="btn-outline" id="exportFlagged">
+                                <i class="fas fa-download"></i>
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="table-info">
+                        <span id="flaggedTableInfo">Showing 0 flagged questions</span>
+                    </div>
+
+                    <div class="flagged-table-container">
+                        <table class="flagged-table" id="flaggedTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Question & Details</th>
+                                    <th>Flagged By</th>
+                                    <th>Flagged At</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="flaggedQuestionsBody">
+                                <tr>
+                                    <td colspan="7" class="no-data">
+                                        <i class="fas fa-flag"></i>
+                                        <p>No flagged questions found</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-pagination" id="flaggedPagination">
+                        <button class="btn-pagination" id="flaggedPrev" disabled>Previous</button>
+                        <span class="pagination-info">Page 1 of 1</span>
+                        <button class="btn-pagination" id="flaggedNext" disabled>Next</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analyticsTab" class="tab-content">
+                <section class="management-section">
+                    <div class="section-header">
+                        <h2>Advanced Analytics</h2>
+                        <div class="section-actions">
+                            <select id="analyticsPeriod" class="period-select">
+                                <option value="7d">Last 7 Days</option>
+                                <option value="30d" selected>Last 30 Days</option>
+                                <option value="90d">Last 90 Days</option>
+                            </select>
+                            <button class="btn-outline" id="exportAnalytics">
+                                <i class="fas fa-download"></i>
+                                Export Analytics
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="analytics-charts">
+                        <div class="chart-row">
+                            <div class="chart-container-large">
+                                <canvas id="userEngagementChart"></canvas>
+                                <div class="chart-placeholder large">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Engagement data will appear here</p>
+                                </div>
+                            </div>
+                            <div class="chart-container-large">
+                                <canvas id="performanceTrendChart"></canvas>
+                                <div class="chart-placeholder large">
+                                    <i class="fas fa-chart-line"></i>
+                                    <p>Performance trends will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chart-row">
+                            <div class="chart-container-large">
+                                <canvas id="topicPerformanceChart"></canvas>
+                                <div class="chart-placeholder large">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <p>Topic performance data will appear here</p>
+                                </div>
+                            </div>
+                            <div class="chart-container-large">
+                                <canvas id="completionRateChart"></canvas>
+                                <div class="chart-placeholder large">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <p>Completion rates will appear here</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New User</h3>
+                <button class="close-modal" id="closeAddUserModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label for="newUserName">Full Name *</label>
+                        <input type="text" id="newUserName" required placeholder="Enter full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserEmail">Email *</label>
+                        <input type="email" id="newUserEmail" required placeholder="Enter email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserPassword">Password *</label>
+                        <input type="password" id="newUserPassword" required placeholder="Enter password">
+                        <div class="password-strength" id="passwordStrength">
+                            <div class="strength-bar">
+                                <div class="strength-fill" id="strengthFill"></div>
+                            </div>
+                            <span class="strength-text" id="strengthText">Weak</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="newUserRole">Role</label>
+                        <select id="newUserRole">
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline" id="cancelAddUser">Cancel</button>
+                <button type="button" class="btn-primary" id="confirmAddUser">Add User</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal" id="userDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>User Details</h3>
+                <button class="close-modal" id="closeUserModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="user-detail-info">
+                    <div class="detail-row">
+                        <span class="detail-label">Name:</span>
+                        <span class="detail-value" id="userDetailName">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value" id="userDetailEmail">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Joined:</span>
+                        <span class="detail-value" id="userDetailJoined">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Last Login:</span>
+                        <span class="detail-value" id="userDetailLastLogin">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Total Quizzes:</span>
+                        <span class="detail-value" id="userDetailQuizzes">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Average Score:</span>
+                        <span class="detail-value" id="userDetailAvgScore">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time Spent:</span>
+                        <span class="detail-value" id="userDetailTimeSpent">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Interests:</span>
+                        <span class="detail-value" id="userDetailInterests">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="closeUserDetail">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Detail Modal -->
+    <div class="modal" id="quizDetailModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Quiz Details</h3>
+                <button class="close-modal" id="closeQuizModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="quiz-detail-info">
+                    <div class="detail-row">
+                        <span class="detail-label">Title:</span>
+                        <span class="detail-value" id="quizDetailTitle">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Topic:</span>
+                        <span class="detail-value" id="quizDetailTopic">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">User:</span>
+                        <span class="detail-value" id="quizDetailUser">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Difficulty:</span>
+                        <span class="detail-value" id="quizDetailDifficulty">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Score:</span>
+                        <span class="detail-value" id="quizDetailScore">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Total Questions:</span>
+                        <span class="detail-value" id="quizDetailQuestions">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Time Taken:</span>
+                        <span class="detail-value" id="quizDetailTime">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Date:</span>
+                        <span class="detail-value" id="quizDetailDate">-</span>
+                    </div>
+                </div>
+                <div class="questions-section">
+                    <h4>Questions & Answers</h4>
+                    <div class="questions-list" id="quizDetailQuestionsList">
+                        <div class="no-data">
+                            <i class="fas fa-question-circle"></i>
+                            <p>No question data available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="closeQuizDetail">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flagged Question Detail Modal -->
+    <div class="modal" id="flaggedQuestionModal">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h3>Flagged Question Details</h3>
+                <button class="close-modal" id="closeFlaggedModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="flagged-detail-info">
+                    <div class="detail-row">
+                        <span class="detail-label">Question:</span>
+                        <span class="detail-value" id="flaggedQuestionText">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Topic:</span>
+                        <span class="detail-value" id="flaggedQuestionTopic">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Difficulty:</span>
+                        <span class="detail-value" id="flaggedQuestionDifficulty">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Reason:</span>
+                        <span class="detail-value" id="flaggedQuestionReason">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Flagged By:</span>
+                        <span class="detail-value" id="flaggedQuestionUser">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Flagged At:</span>
+                        <span class="detail-value" id="flaggedQuestionDate">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">User Comment:</span>
+                        <span class="detail-value" id="flaggedQuestionComment">-</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value" id="flaggedQuestionStatus">-</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary" id="closeFlaggedDetail">Close</button>
+                <button class="btn-success" id="resolveFlagged">Mark Resolved</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div class="notifications-panel" id="notificationsPanel">
+        <div class="panel-header">
+            <h3>Notifications</h3>
+            <button class="btn-icon" id="closeNotifications">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="notifications-list" id="notificationsList">
+            <div class="no-data">
+                <i class="fas fa-bell"></i>
+                <p>No notifications</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p id="loadingMessage">Loading admin data...</p>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3 id="confirmationTitle">Confirm Action</h3>
+                <button class="close-modal" id="closeConfirmationModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmationMessage">Are you sure you want to perform this action?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" id="cancelConfirmation">Cancel</button>
+                <button class="btn-danger" id="confirmAction">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

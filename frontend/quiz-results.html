@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results - AI Quizzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="quiz-results.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="results-container">
+        <!-- Header -->
+        <div class="results-header">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>AI Quizzer</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="results-content">
+            <!-- Score Section -->
+            <div class="score-section">
+                <div class="score-circle" id="scoreCircle">
+                    <div class="score-value" id="scoreValue">0%</div>
+                    <div class="score-label">Your Score</div>
+                </div>
+                <h1 class="result-title" id="resultTitle">Great Job!</h1>
+                <p class="result-message" id="resultMessage">You've completed the quiz</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <div class="stat-value" id="correctCount">0/0</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <div class="stat-value" id="timeSpent">0m 0s</div>
+                    <div class="stat-label">Time Taken</div>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <div class="stat-value" id="difficulty">Medium</div>
+                    <div class="stat-label">Difficulty</div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="analytics-section">
+                <h2><i class="fas fa-chart-bar"></i> Performance Analytics</h2>
+                
+                <div class="charts-grid">
+                    <!-- Question Types Chart -->
+                    <div class="chart-box">
+                        <h3>Question Types Performance</h3>
+                        <canvas id="questionTypeChart"></canvas>
+                    </div>
+                    
+                    <!-- Difficulty Chart -->
+                    <div class="chart-box">
+                        <h3>Difficulty Distribution</h3>
+                        <canvas id="difficultyChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Suggestions -->
+                <div class="suggestions-section">
+                    <h3><i class="fas fa-lightbulb"></i> Suggestions for Improvement</h3>
+                    <ul class="suggestions-list" id="suggestionsList">
+                        <li><i class="fas fa-arrow-right"></i> Loading suggestions...</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Certificate Section -->
+            <div class="certificate-section" id="certificateSection" style="display: none;">
+                <div class="certificate-banner">
+                    <i class="fas fa-award"></i>
+                    <div>
+                        <h3>🎉 Congratulations!</h3>
+                        <p>You've earned a certificate for scoring 70% or higher!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-certificate" id="certificateBtn" style="display: none;" onclick="downloadCertificate()">
+                    <i class="fas fa-award"></i> Get Certificate
+                </button>
+                <button class="btn-primary" onclick="window.location.href='quiz-generator.html'">
+                    <i class="fas fa-plus-circle"></i> New Quiz
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='dashboard.html'">
+                    <i class="fas fa-home"></i> Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="quiz-results.js"></script>
+</body>
+</html>

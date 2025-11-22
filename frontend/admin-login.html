@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Adaptive Quiz Generator</title>
+    <link rel="stylesheet" href="admin-login.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="floating-icon">
+            <i class="fas fa-shield-alt"></i>
+        </div>
+        <div class="floating-icon">
+            <i class="fas fa-cogs"></i>
+        </div>
+        <div class="floating-icon">
+            <i class="fas fa-user-cog"></i>
+        </div>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div class="container">
+        <div class="form-container">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Admin Portal</span>
+                </div>
+                <h1>Secure Admin Access</h1>
+                <p>Restricted area - authorized personnel only</p>
+            </div>
+
+            <!-- Security Notice -->
+            <div class="security-notice">
+                <div class="notice-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="notice-content">
+                    <h3>Security Notice</h3>
+                    <p>This area contains sensitive administrative functions. Please ensure you have proper authorization.</p>
+                </div>
+            </div>
+
+            <!-- Login Form -->
+            <form id="adminLoginForm" class="auth-form">
+                <div class="form-group">
+                    <div class="input-with-icon">
+                        <i class="fas fa-user-shield"></i>
+                        <input type="text" id="adminUsername" name="username" placeholder="Admin Username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="adminPassword" name="password" placeholder="Admin Password" required>
+                        <button type="button" class="toggle-password" id="toggleAdminPassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberAdmin">
+                        <span class="checkmark"></span>
+                        Remember this device
+                    </label>
+                    <a href="#" class="forgot-password" id="forgotAdminPassword">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn-primary" id="adminLoginBtn">
+                    <span class="btn-text">Secure Login</span>
+                    <div class="btn-loader" style="display: none;">
+                        <div class="spinner"></div>
+                    </div>
+                </button>
+
+                <div class="divider">
+                    <span>quick access</span>
+                </div>
+
+                <div class="quick-actions">
+                    <button type="button" class="btn-secondary" onclick="useDefaultCredentials()">
+                        <i class="fas fa-key"></i>
+                        Use Default Credentials
+                    </button>
+                </div>
+            </form>
+
+            <!-- Forgot Password Modal -->
+            <div class="modal" id="forgotPasswordModal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Admin Password Reset</h3>
+                        <button class="close-modal" id="closeModal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p>For security reasons, please contact the system administrator to reset your password.</p>
+                        <div class="admin-contact">
+                            <i class="fas fa-headset"></i>
+                            <div>
+                                <strong>System Administrator</strong>
+                                <p>admin@quizsystem.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn-primary" id="closeForgotModal">Understood</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>Are you a student? <a href="login.html" class="signup-link">Go to Student Login</a></p>
+                <p class="security-tip">
+                    <i class="fas fa-info-circle"></i>
+                    Always log out after your session
+                </p>
+            </div>
+        </div>
+
+        <!-- Admin Features Showcase -->
+        <div class="features-sidebar">
+            <div class="features-content">
+                <h2>Admin Capabilities</h2>
+                <div class="feature-item">
+                    <i class="fas fa-users-cog"></i>
+                    <div>
+                        <h3>User Management</h3>
+                        <p>Manage all student accounts and permissions</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <div>
+                        <h3>Analytics Dashboard</h3>
+                        <p>Monitor platform performance and usage</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-flag"></i>
+                    <div>
+                        <h3>Content Moderation</h3>
+                        <p>Review and manage flagged content</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-cogs"></i>
+                    <div>
+                        <h3>System Settings</h3>
+                        <p>Configure platform settings and preferences</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-database"></i>
+                    <div>
+                        <h3>Data Management</h3>
+                        <p>Export and manage system data</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <h3>Security Controls</h3>
+                        <p>Monitor security and access logs</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification" id="notification"></div>
+
+    <script src="admin-login.js"></script>
+</body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Quizzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Quizzer</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="quiz-generator.html" class="nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Generate Quiz</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('history')">
+                    <i class="fas fa-history"></i>
+                    <span>Quiz History</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('progress')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('certificates')">
+                    <i class="fas fa-award"></i>
+                    <span>Certificates</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('profile')">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <div class="user-details">
+                        <div class="user-name" id="sidebarUserName">Loading...</div>
+                        <div class="user-email" id="sidebarUserEmail">Loading...</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="content-section active">
+                <div class="content-header">
+                    <div class="header-text">
+                        <h1>Welcome back, <span id="greetingName">Student</span>! 👋</h1>
+                        <p>Ready to continue your learning journey?</p>
+                    </div>
+                    <button class="btn-refresh" onclick="refreshDashboardData()" title="Refresh Dashboard">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalQuizzes">0</h3>
+                            <p>Total Quizzes</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="averageScore">0%</h3>
+                            <p>Average Score</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalTime">0m</h3>
+                            <p>Total Time</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="certificateCount">0</h3>
+                            <p>Certificates</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Quick Actions</h2>
+                    </div>
+                    <div class="actions-grid">
+                        <a href="quiz-generator.html" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-plus-circle"></i>
+                            </div>
+                            <h3>Generate Quiz</h3>
+                            <p>Create a personalized quiz from your content</p>
+                        </a>
+
+                        <div class="action-card" onclick="showSection('history')">
+                            <div class="action-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h3>Quiz History</h3>
+                            <p>View your previous quizzes and results</p>
+                        </div>
+
+                        <div class="action-card" onclick="showSection('progress')">
+                            <div class="action-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h3>View Progress</h3>
+                            <p>Check your learning analytics and growth</p>
+                        </div>
+
+                        <div class="action-card" onclick="showSection('certificates')">
+                            <div class="action-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <h3>My Certificates</h3>
+                            <p>View your earned achievements and badges</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Quizzes -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Recent Quizzes</h2>
+                        <button class="btn-text" onclick="showSection('history')">
+                            View All
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                    <div class="recent-quizzes" id="recentQuizzes">
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>Loading quizzes...</h3>
+                            <p>Please wait while we load your data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Chart -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2>Performance Trend</h2>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Other Sections -->
+            <div id="history" class="content-section">
+                <div class="content-header">
+                    <h1>Quiz History</h1>
+                    <p>Your learning journey so far</p>
+                </div>
+                <div class="section-card">
+                    <div id="quizHistoryContent">
+                        <div class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <h3>Loading history...</h3>
+                            <p>Please wait while we load your quiz history</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="progress" class="content-section">
+                <div class="content-header">
+                    <h1>Your Progress</h1>
+                    <p>Track your learning growth and achievements</p>
+                </div>
+                <div class="section-card">
+                    <div id="progressContent">
+                        <div class="empty-state">
+                            <i class="fas fa-chart-line"></i>
+                            <h3>Loading progress...</h3>
+                            <p>Please wait while we load your progress data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="certificates" class="content-section">
+                <div class="content-header">
+                    <h1>My Certificates</h1>
+                    <p>Your earned achievements and badges</p>
+                </div>
+                <div class="section-card">
+                    <div id="certificatesContent">
+                        <div class="empty-state">
+                            <i class="fas fa-award"></i>
+                            <h3>Loading certificates...</h3>
+                            <p>Please wait while we load your certificates</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="profile" class="content-section">
+                <div class="content-header">
+                    <h1>Profile Settings</h1>
+                    <p>Manage your account information</p>
+                </div>
+                <div class="section-card">
+                    <div id="profileContent">
+                        <div class="empty-state">
+                            <i class="fas fa-user"></i>
+                            <h3>Loading profile...</h3>
+                            <p>Please wait while we load your profile</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Loading your dashboard...</p>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

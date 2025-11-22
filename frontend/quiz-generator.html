@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Quiz - Adaptive Quiz Generator</title>
+    <link rel="stylesheet" href="quiz-generator.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="generator-nav">
+        <div class="nav-container">
+            <button class="btn-back" onclick="location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </button>
+            <div class="nav-title">
+                <h1><i class="fas fa-robot"></i> AI Quiz Generator</h1>
+                <p>Create personalized quizzes from any content</p>
+            </div>
+            <div class="nav-actions">
+                <button class="btn-outline" id="saveTemplate">
+                    <i class="fas fa-save"></i>
+                    Save Template
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="generator-container">
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+            <div class="progress-step active" data-step="1">
+                <div class="step-number">1</div>
+                <span>Upload Content</span>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-number">2</div>
+                <span>Configure Quiz</span>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-number">3</div>
+                <span>Generate & Preview</span>
+            </div>
+        </div>
+
+        <!-- Content Upload Section -->
+        <section class="upload-section">
+            <div class="section-header">
+                <h2>1. Upload Your Content</h2>
+                <p>Choose how you want to provide learning material</p>
+            </div>
+
+            <div class="upload-methods">
+                <!-- PDF Upload -->
+                <div class="upload-method active" data-method="pdf">
+                    <div class="method-icon">
+                        <i class="fas fa-file-pdf"></i>
+                    </div>
+                    <h3>Upload PDF</h3>
+                    <p>Upload educational PDF documents</p>
+                    <div class="method-badge">Most Popular</div>
+                </div>
+
+                <!-- Text Input -->
+                <div class="upload-method" data-method="text">
+                    <div class="method-icon">
+                        <i class="fas fa-align-left"></i>
+                    </div>
+                    <h3>Paste Text</h3>
+                    <p>Copy and paste your text content</p>
+                </div>
+
+                <!-- URL Input -->
+                <div class="upload-method" data-method="url">
+                    <div class="method-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3>Website URL</h3>
+                    <p>Enter URL to extract content</p>
+                </div>
+
+                <!-- Topic Selection -->
+                <div class="upload-method" data-method="topic">
+                    <div class="method-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Select Topic</h3>
+                    <p>Choose from predefined topics</p>
+                </div>
+            </div>
+
+            <!-- Upload Areas -->
+            <div class="upload-areas">
+                <!-- PDF Upload Area -->
+                <div class="upload-area active" id="pdfArea">
+                    <div class="upload-box" id="pdfUploadBox">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Upload PDF File</h3>
+                        <p>Drag & drop your PDF file here or click to browse</p>
+                        <p class="file-requirements">Max file size: 10MB • Supported: PDF only</p>
+                        <input type="file" id="pdfFile" accept=".pdf" hidden>
+                        <button class="btn-primary" onclick="document.getElementById('pdfFile').click()">
+                            <i class="fas fa-folder-open"></i>
+                            Choose PDF File
+                        </button>
+                        <div class="file-info" id="pdfFileInfo"></div>
+                    </div>
+                    <div class="upload-preview" id="pdfPreview">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-file-pdf"></i>
+                            <p>PDF preview will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Input Area -->
+                <div class="upload-area" id="textArea">
+                    <div class="text-input-container">
+                        <div class="text-header">
+                            <h4>Paste Your Content</h4>
+                            <div class="text-actions">
+                                <button class="btn-icon" id="clearText" title="Clear text">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <button class="btn-icon" id="formatText" title="Format text">
+                                    <i class="fas fa-magic"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="textContent" placeholder="Paste your educational content here... 
+
+Example: 
+Machine learning is a subset of artificial intelligence that focuses on algorithms that can learn from data. Deep learning is a more advanced technique that uses neural networks with multiple layers to learn representations of data.
+
+Key concepts include:
+• Supervised learning
+• Unsupervised learning  
+• Reinforcement learning
+• Neural networks
+• Training and testing datasets"></textarea>
+                        <div class="text-stats">
+                            <span id="wordCount">0 words</span>
+                            <span id="charCount">0 characters</span>
+                            <span id="paragraphCount">0 paragraphs</span>
+                        </div>
+                    </div>
+                    <div class="content-quality">
+                        <div class="quality-indicator">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Content quality: <strong id="qualityScore">Good</strong></span>
+                        </div>
+                        <small>Minimum 50 words recommended for best results</small>
+                    </div>
+                </div>
+
+                <!-- URL Input Area -->
+                <div class="upload-area" id="urlArea">
+                    <div class="url-input-container">
+                        <div class="input-with-icon">
+                            <i class="fas fa-globe"></i>
+                            <input type="url" id="urlInput" placeholder="https://example.com/educational-content">
+                        </div>
+                        <button class="btn-primary" id="fetchUrl">
+                            <i class="fas fa-download"></i>
+                            Fetch Content
+                        </button>
+                    </div>
+                    <div class="url-features">
+                        <div class="feature-tags">
+                            <span class="feature-tag">Wikipedia</span>
+                            <span class="feature-tag">Blog Posts</span>
+                            <span class="feature-tag">Articles</span>
+                            <span class="feature-tag">Documentation</span>
+                        </div>
+                    </div>
+                    <div class="url-preview" id="urlPreview">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-link"></i>
+                            <p>Enter a URL and click "Fetch Content" to preview</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Topic Selection Area -->
+                <div class="upload-area" id="topicArea">
+                    <div class="topic-selection">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="topicSearch" placeholder="Search topics... (e.g., Mathematics, Programming)">
+                            <button class="btn-icon" id="clearSearch">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="topics-categories">
+                            <div class="category-tabs">
+                                <button class="category-tab active" data-category="all">All Topics</button>
+                                <button class="category-tab" data-category="technology">Technology</button>
+                                <button class="category-tab" data-category="science">Science</button>
+                                <button class="category-tab" data-category="humanities">Humanities</button>
+                                <button class="category-tab" data-category="business">Business</button>
+                            </div>
+                        </div>
+
+                        <div class="topics-grid" id="topicsGrid">
+                            <!-- Topics will be loaded dynamically -->
+                        </div>
+
+                        <div class="custom-topic-section">
+                            <h4>Can't find your topic?</h4>
+                            <div class="custom-topic">
+                                <input type="text" id="customTopic" placeholder="Enter custom topic...">
+                                <button class="btn-outline" id="addCustomTopic">
+                                    <i class="fas fa-plus"></i>
+                                    Add
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="recent-topics">
+                            <h4>Recently Used</h4>
+                            <div class="recent-tags" id="recentTopics">
+                                <!-- Recent topics will appear here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Configuration Section -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>2. Configure Your Quiz</h2>
+                <p>Customize the quiz settings to match your needs</p>
+            </div>
+
+            <div class="config-grid">
+                <!-- Quiz Settings -->
+                <div class="config-card">
+                    <h3><i class="fas fa-cog"></i> Quiz Settings</h3>
+                    
+                    <div class="form-group">
+                        <label for="quizTitle">
+                            Quiz Title
+                            <span class="required">*</span>
+                        </label>
+                        <input type="text" id="quizTitle" placeholder="Enter an engaging quiz title...">
+                        <small>This will be displayed to quiz takers</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="questionCount">Number of Questions</label>
+                        <div class="range-container">
+                            <input type="range" id="questionCount" min="5" max="50" value="10" step="5">
+                            <div class="range-labels">
+                                <span>5</span>
+                                <span id="questionCountValue">10</span>
+                                <span>50</span>
+                            </div>
+                        </div>
+                        <small>More questions provide better adaptive learning</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="timeLimit">Time Limit</label>
+                        <select id="timeLimit">
+                            <option value="0">No time limit</option>
+                            <option value="30">30 seconds per question</option>
+                            <option value="45" selected>45 seconds per question</option>
+                            <option value="60">60 seconds per question</option>
+                            <option value="90">90 seconds per question</option>
+                            <option value="120">2 minutes per question</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passingScore">Passing Score (%)</label>
+                        <input type="number" id="passingScore" min="50" max="100" value="70" step="5">
+                        <small>Minimum score required to pass the quiz</small>
+                    </div>
+                </div>
+
+                <!-- Question Types -->
+                <div class="config-card">
+                    <h3><i class="fas fa-question-circle"></i> Question Types</h3>
+                    <p class="card-description">Select the types of questions to include</p>
+                    
+                    <div class="checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="questionTypes" value="MCQ" checked>
+                            <span class="checkmark"></span>
+                            <div class="option-content">
+                                <i class="fas fa-list-ul"></i>
+                                <div>
+                                    <span>Multiple Choice</span>
+                                    <small>Classic questions with options</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="questionTypes" value="TrueFalse" checked>
+                            <span class="checkmark"></span>
+                            <div class="option-content">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <span>True/False</span>
+                                    <small>Simple true or false questions</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="questionTypes" value="FillBlank">
+                            <span class="checkmark"></span>
+                            <div class="option-content">
+                                <i class="fas fa-edit"></i>
+                                <div>
+                                    <span>Fill in Blanks</span>
+                                    <small>Complete missing words</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="questionTypes" value="ShortAnswer">
+                            <span class="checkmark"></span>
+                            <div class="option-content">
+                                <i class="fas fa-align-left"></i>
+                                <div>
+                                    <span>Short Answer</span>
+                                    <small>Brief written responses</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="questionTypes" value="Matching">
+                            <span class="checkmark"></span>
+                            <div class="option-content">
+                                <i class="fas fa-exchange-alt"></i>
+                                <div>
+                                    <span>Matching</span>
+                                    <small>Match items from two columns</small>
+                                </div>
+                            </div>
+                        </label>
+
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="questionTypes" value="Ordering">
+                            <span class="checkmark"></span>
+                            <div class="option-content">
+                                <i class="fas fa-sort-amount-down"></i>
+                                <div>
+                                    <span>Ordering</span>
+                                    <small>Arrange items in correct sequence</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="distribution-preview">
+                        <h4>Question Distribution</h4>
+                        <div class="distribution-chart" id="distributionChart">
+                            <!-- Distribution bars will be generated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Difficulty & AI Settings -->
+                <div class="config-card">
+                    <h3><i class="fas fa-brain"></i> AI Settings</h3>
+                    
+                    <div class="form-group">
+                        <label for="difficultyLevel">Starting Difficulty</label>
+                        <select id="difficultyLevel">
+                            <option value="adaptive">Adaptive (Recommended)</option>
+                            <option value="easy">Easy</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="hard">Hard</option>
+                            <option value="mixed">Mixed Levels</option>
+                        </select>
+                        <small>Adaptive mode adjusts based on performance</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aiModel">AI Model</label>
+                        <select id="aiModel">
+                            <option value="gemini-pro" selected>Gemini Pro (Recommended)</option>
+                            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="claude-3">Claude 3</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="creativityLevel">Creativity Level</label>
+                        <div class="range-container">
+                            <input type="range" id="creativityLevel" min="0" max="100" value="75">
+                            <div class="range-labels">
+                                <span>Factual</span>
+                                <span id="creativityValue">Creative</span>
+                                <span>Original</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-features">
+                        <h4>AI Features</h4>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableContext" checked>
+                            <span class="checkmark"></span>
+                            <span>Maintain context awareness</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableRealWorld" checked>
+                            <span class="checkmark"></span>
+                            <span>Include real-world examples</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableVariations">
+                            <span class="checkmark"></span>
+                            <span>Generate question variations</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Settings -->
+                <div class="config-card">
+                    <h3><i class="fas fa-sliders-h"></i> Advanced Settings</h3>
+                    
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <select id="language">
+                            <option value="en" selected>English</option>
+                            <option value="es">Spanish</option>
+                            <option value="fr">French</option>
+                            <option value="de">German</option>
+                            <option value="hi">Hindi</option>
+                            <option value="zh">Chinese</option>
+                            <option value="ja">Japanese</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bloomLevel">Bloom's Taxonomy Level</label>
+                        <select id="bloomLevel">
+                            <option value="mixed">Mixed Levels (Recommended)</option>
+                            <option value="remember">Remembering</option>
+                            <option value="understand">Understanding</option>
+                            <option value="apply">Applying</option>
+                            <option value="analyze">Analyzing</option>
+                            <option value="evaluate">Evaluating</option>
+                            <option value="create">Creating</option>
+                        </select>
+                        <small>Higher levels require more critical thinking</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="feedbackLevel">Feedback Detail</label>
+                        <select id="feedbackLevel">
+                            <option value="minimal">Minimal</option>
+                            <option value="standard" selected>Standard</option>
+                            <option value="detailed">Detailed</option>
+                            <option value="comprehensive">Comprehensive</option>
+                        </select>
+                    </div>
+
+                    <div class="advanced-options">
+                        <h4>Additional Options</h4>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableExplanations" checked>
+                            <span class="checkmark"></span>
+                            <span>Include answer explanations</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableAdaptive" checked>
+                            <span class="checkmark"></span>
+                            <span>Enable adaptive difficulty</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableHints">
+                            <span class="checkmark"></span>
+                            <span>Allow hints during quiz</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="enableReview" checked>
+                            <span class="checkmark"></span>
+                            <span>Enable review after quiz</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="shuffleQuestions" checked>
+                            <span class="checkmark"></span>
+                            <span>Shuffle questions</span>
+                        </div>
+                        <div class="checkbox-option small">
+                            <input type="checkbox" id="shuffleOptions" checked>
+                            <span class="checkmark"></span>
+                            <span>Shuffle answer options</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Templates -->
+            <div class="templates-section">
+                <h3>Quick Templates</h3>
+                <div class="template-cards">
+                    <div class="template-card" data-template="exam-prep">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h4>Exam Preparation</h4>
+                        <p>Comprehensive questions with mixed difficulty</p>
+                        <button class="btn-outline btn-small">Apply</button>
+                    </div>
+                    <div class="template-card" data-template="quick-review">
+                        <i class="fas fa-bolt"></i>
+                        <h4>Quick Review</h4>
+                        <p>Short quiz for rapid knowledge check</p>
+                        <button class="btn-outline btn-small">Apply</button>
+                    </div>
+                    <div class="template-card" data-template="deep-learning">
+                        <i class="fas fa-brain"></i>
+                        <h4>Deep Learning</h4>
+                        <p>Focus on analysis and evaluation</p>
+                        <button class="btn-outline btn-small">Apply</button>
+                    </div>
+                    <div class="template-card" data-template="fun-quiz">
+                        <i class="fas fa-gamepad"></i>
+                        <h4>Fun Quiz</h4>
+                        <p>Engaging questions with varied types</p>
+                        <button class="btn-outline btn-small">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Preview & Generate Section -->
+        <section class="generate-section">
+            <div class="section-header">
+                <h2>3. Generate & Preview</h2>
+                <p>Review settings and create your quiz</p>
+            </div>
+
+            <div class="preview-container">
+                <!-- Settings Summary -->
+                <div class="settings-summary">
+                    <h3>Quiz Summary</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <i class="fas fa-file"></i>
+                            <div>
+                                <span class="label">Source</span>
+                                <span class="value" id="summarySource">Not selected</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-question"></i>
+                            <div>
+                                <span class="label">Questions</span>
+                                <span class="value" id="summaryQuestions">10</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <span class="label">Time Limit</span>
+                                <span class="value" id="summaryTime">45s per question</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-brain"></i>
+                            <div>
+                                <span class="label">Difficulty</span>
+                                <span class="value" id="summaryDifficulty">Medium</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-chart-bar"></i>
+                            <div>
+                                <span class="label">Passing Score</span>
+                                <span class="value" id="summaryPassing">70%</span>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-language"></i>
+                            <div>
+                                <span class="label">Language</span>
+                                <span class="value" id="summaryLanguage">English</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-stats">
+                        <h4>Estimated Stats</h4>
+                        <div class="stats-grid">
+                            <div class="stat">
+                                <span class="stat-value" id="estimatedTime">8 min</span>
+                                <span class="stat-label">Duration</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="questionTypesCount">2 types</span>
+                                <span class="stat-label">Variety</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="coverageScore">85%</span>
+                                <span class="stat-label">Coverage</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Processing Preview -->
+                <div class="ai-preview">
+                    <h3>AI Processing Preview</h3>
+                    
+                    <div class="processing-steps">
+                        <div class="processing-step active" data-step="1">
+                            <div class="step-icon">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <span>Content Analysis</span>
+                            <div class="step-progress"></div>
+                        </div>
+                        <div class="processing-step" data-step="2">
+                            <div class="step-icon">
+                                <i class="fas fa-code"></i>
+                            </div>
+                            <span>Concept Mapping</span>
+                            <div class="step-progress"></div>
+                        </div>
+                        <div class="processing-step" data-step="3">
+                            <div class="step-icon">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <span>Question Generation</span>
+                            <div class="step-progress"></div>
+                        </div>
+                        <div class="processing-step" data-step="4">
+                            <div class="step-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <span>Quality Assurance</span>
+                            <div class="step-progress"></div>
+                        </div>
+                    </div>
+
+                    <div class="content-analysis">
+                        <h4>Content Analysis</h4>
+                        <div class="analysis-results">
+                            <div class="analysis-item">
+                                <span>Key Topics Identified:</span>
+                                <span id="keyTopicsCount">0</span>
+                            </div>
+                            <div class="analysis-item">
+                                <span>Complexity Level:</span>
+                                <span id="complexityLevel">Medium</span>
+                            </div>
+                            <div class="analysis-item">
+                                <span>Content Quality:</span>
+                                <span id="contentQuality">Good</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preview-questions" id="previewQuestions">
+                        <div class="preview-header">
+                            <h4>Generated Questions Preview</h4>
+                            <div class="preview-actions">
+                                <button class="btn-icon" id="refreshPreview">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="preview-placeholder">
+                            <i class="fas fa-robot"></i>
+                            <p>Questions will be generated here</p>
+                            <small>AI will create personalized questions based on your content</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <div class="generate-actions">
+                <div class="action-buttons">
+                    <button class="btn-primary btn-large" id="generateQuiz">
+                        <i class="fas fa-bolt"></i>
+                        Generate Quiz with AI
+                    </button>
+                    <button class="btn-outline" id="previewQuiz" disabled>
+                        <i class="fas fa-eye"></i>
+                        Preview All Questions
+                    </button>
+                    <button class="btn-outline" id="saveConfig">
+                        <i class="fas fa-save"></i>
+                        Save Configuration
+                    </button>
+                </div>
+                
+                <div class="generation-options">
+                    <div class="checkbox-option small">
+                        <input type="checkbox" id="autoPreview" checked>
+                        <span class="checkmark"></span>
+                        <span>Auto-preview after generation</span>
+                    </div>
+                    <div class="checkbox-option small">
+                        <input type="checkbox" id="saveToLibrary" checked>
+                        <span class="checkmark"></span>
+                        <span>Save to quiz library</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Generated Questions Modal -->
+    <div class="modal" id="questionsModal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>Generated Questions Preview</h3>
+                <div class="modal-actions">
+                    <button class="btn-outline btn-small" id="exportQuestions">
+                        <i class="fas fa-download"></i>
+                        Export
+                    </button>
+                    <button class="btn-outline btn-small" id="printQuestions">
+                        <i class="fas fa-print"></i>
+                        Print
+                    </button>
+                    <button class="close-modal" id="closeQuestionsModal">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="questions-stats">
+                    <div class="stat-card">
+                        <i class="fas fa-question"></i>
+                        <div>
+                            <span class="stat-number" id="totalQuestions">0</span>
+                            <span class="stat-label">Total Questions</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="stat-number" id="totalTime">0 min</span>
+                            <span class="stat-label">Estimated Time</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-brain"></i>
+                        <div>
+                            <span class="stat-number" id="avgDifficulty">Medium</span>
+                            <span class="stat-label">Avg. Difficulty</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-chart-pie"></i>
+                        <div>
+                            <span class="stat-number" id="typeDistribution">2 types</span>
+                            <span class="stat-label">Question Types</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="questions-filter">
+                    <div class="filter-group">
+                        <label>Filter by:</label>
+                        <select id="filterType">
+                            <option value="all">All Types</option>
+                            <option value="MCQ">Multiple Choice</option>
+                            <option value="TrueFalse">True/False</option>
+                            <option value="FillBlank">Fill in Blanks</option>
+                            <option value="ShortAnswer">Short Answer</option>
+                        </select>
+                        <select id="filterDifficulty">
+                            <option value="all">All Difficulties</option>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
+                        </select>
+                        <button class="btn-icon" id="clearFilters">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="search-questions">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchQuestions" placeholder="Search questions...">
+                    </div>
+                </div>
+
+                <div class="questions-list" id="questionsList">
+                    <!-- Questions will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="footer-actions">
+                    <button class="btn-outline" id="regenerateQuestions">
+                        <i class="fas fa-sync"></i>
+                        Regenerate Questions
+                    </button>
+                    <button class="btn-outline" id="editQuestions">
+                        <i class="fas fa-edit"></i>
+                        Edit Questions
+                    </button>
+                    <button class="btn-primary" id="startQuiz">
+                        <i class="fas fa-play"></i>
+                        Start Quiz Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Save Modal -->
+    <div class="modal" id="saveConfigModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Save Configuration</h3>
+                <button class="close-modal" id="closeSaveModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="configName">Configuration Name</label>
+                    <input type="text" id="configName" placeholder="e.g., Science Quiz Template">
+                </div>
+                <div class="form-group">
+                    <label for="configDescription">Description</label>
+                    <textarea id="configDescription" placeholder="Brief description of this configuration..."></textarea>
+                </div>
+                <div class="checkbox-option">
+                    <input type="checkbox" id="setAsDefault">
+                    <span class="checkmark"></span>
+                    <span>Set as default configuration</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" id="cancelSave">Cancel</button>
+                <button class="btn-primary" id="confirmSave">Save Configuration</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="ai-brain">
+                <i class="fas fa-brain"></i>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+            </div>
+            <h3 id="loadingTitle">AI is generating your quiz...</h3>
+            <p id="loadingMessage">Processing your content and creating personalized questions</p>
+            
+            <div class="loading-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="aiProgress"></div>
+                </div>
+                <div class="progress-info">
+                    <span id="progressText">Analyzing content...</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+            </div>
+
+            <div class="loading-tips">
+                <h4>Pro Tip</h4>
+                <p id="loadingTip">The AI is analyzing key concepts and relationships in your content to create meaningful questions.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification" id="notification"></div>
+
+    <script src="quiz-generator.js"></script>
+</body>
+</html>

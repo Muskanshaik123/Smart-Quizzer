@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Engine - Adaptive Quiz Generator</title>
+    <link rel="stylesheet" href="quiz.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Quiz Header -->
+    <header class="quiz-header">
+        <div class="header-left">
+            <button class="btn-back" onclick="location.href='dashboard.html'">
+                <i class="fas fa-arrow-left"></i>
+                Back to Dashboard
+            </button>
+            <div class="quiz-info">
+                <h1 id="quizTitle">Adaptive Quiz</h1>
+                <p id="quizTopic">Topic: Loading...</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="quiz-stats">
+                <div class="stat">
+                    <i class="fas fa-clock"></i>
+                    <span id="timer">00:00</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-brain"></i>
+                    <span id="currentDifficulty">Medium</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-list-ol"></i>
+                    <span id="progress">1/10</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Quiz Container -->
+    <main class="quiz-container">
+        <!-- Quiz Progress Bar -->
+        <div class="quiz-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+            </div>
+            <div class="progress-text" id="progressText">Question 1 of 10</div>
+        </div>
+
+        <!-- Question Container -->
+        <div class="question-container" id="questionContainer">
+            <!-- Question will be loaded here dynamically -->
+        </div>
+
+        <!-- Quiz Controls -->
+        <div class="quiz-controls">
+            <button class="btn-secondary" id="flagBtn">
+                <i class="fas fa-flag"></i>
+                Flag Question
+            </button>
+            <div class="control-buttons">
+                <button class="btn-outline" id="prevBtn" disabled>
+                    <i class="fas fa-arrow-left"></i>
+                    Previous
+                </button>
+                <button class="btn-primary" id="nextBtn">
+                    Next Question
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+                <button class="btn-success" id="submitBtn" style="display: none;">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit Quiz
+                </button>
+            </div>
+        </div>
+
+        <!-- Difficulty Adjustment Indicator -->
+        <div class="difficulty-indicator" id="difficultyIndicator">
+            <div class="indicator-content">
+                <i class="fas fa-chart-line"></i>
+                <span>Adapting difficulty based on your performance...</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Flag Question Modal -->
+    <div class="modal" id="flagModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Flag Question</h3>
+                <button class="close-modal" id="closeFlagModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please select why you're flagging this question:</p>
+                <div class="flag-reasons">
+                    <label class="flag-option">
+                        <input type="radio" name="flagReason" value="unclear">
+                        <div class="flag-card">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Question is unclear</span>
+                        </div>
+                    </label>
+                    <label class="flag-option">
+                        <input type="radio" name="flagReason" value="typo">
+                        <div class="flag-card">
+                            <i class="fas fa-typo3"></i>
+                            <span>Typo or grammatical error</span>
+                        </div>
+                    </label>
+                    <label class="flag-option">
+                        <input type="radio" name="flagReason" value="incorrect">
+                        <div class="flag-card">
+                            <i class="fas fa-times-circle"></i>
+                            <span>Incorrect answer</span>
+                        </div>
+                    </label>
+                    <label class="flag-option">
+                        <input type="radio" name="flagReason" value="other">
+                        <div class="flag-card">
+                            <i class="fas fa-ellipsis-h"></i>
+                            <span>Other reason</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="flag-comment" id="flagComment" style="display: none;">
+                    <textarea placeholder="Please describe the issue..." rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" id="cancelFlag">Cancel</button>
+                <button class="btn-primary" id="confirmFlag" disabled>Flag Question</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Completion Modal -->
+    <div class="modal" id="completionModal">
+        <div class="modal-content completion-modal">
+            <div class="completion-header">
+                <div class="completion-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h2>Quiz Completed! 🎉</h2>
+                <p>Great job completing the quiz!</p>
+            </div>
+            <div class="completion-stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="finalScore">85%</div>
+                    <div class="stat-label">Final Score</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="timeTaken">12:30</div>
+                    <div class="stat-label">Time Taken</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="correctAnswers">8/10</div>
+                    <div class="stat-label">Correct Answers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgDifficulty">Medium</div>
+                    <div class="stat-label">Average Difficulty</div>
+                </div>
+            </div>
+            <div class="completion-actions">
+                <button class="btn-outline" id="reviewQuiz">
+                    <i class="fas fa-search"></i>
+                    Review Answers
+                </button>
+                <button class="btn-primary" id="generateCertificate" style="display: none;">
+                    <i class="fas fa-award"></i>
+                    Generate Certificate
+                </button>
+                <button class="btn-success" id="newQuiz">
+                    <i class="fas fa-plus"></i>
+                    Take New Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div class="modal" id="certificateModal">
+        <div class="modal-content certificate-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-award"></i> Certificate Generated!</h3>
+                <button class="close-modal" id="closeCertificateModal">&times;</button>
+            </div>
+            <div class="certificate-content" id="certificateContent">
+                <!-- Certificate content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-outline" id="closeCertificate">Close</button>
+                <button class="btn-success" id="downloadCertificate">
+                    <i class="fas fa-download"></i>
+                    Download Certificate
+                </button>
+                <button class="btn-primary" id="uploadCertificateBtn">
+                    <i class="fas fa-upload"></i>
+                    Upload Certificate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Upload Modal -->
+    <div class="modal" id="uploadCertificateModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Upload Certificate</h3>
+                <button class="close-modal" id="closeUploadModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h4>Upload Your Certificate</h4>
+                    <p>Drag & drop your certificate file here or click to browse</p>
+                    <input type="file" id="certificateFile" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="display: none;">
+                    <button class="btn btn-primary" onclick="document.getElementById('certificateFile').click()">
+                        Browse Files
+                    </button>
+                </div>
+                <div class="upload-preview" id="uploadPreview" style="display: none;">
+                    <div class="preview-header">
+                        <h4>File Preview</h4>
+                        <button class="btn btn-sm btn-outline" onclick="clearUpload()">Change File</button>
+                    </div>
+                    <div class="preview-content">
+                        <div id="filePreview"></div>
+                        <div class="file-info">
+                            <span id="fileName"></span>
+                            <span id="fileSize"></span>
+                        </div>
+                    </div>
+                    <div class="upload-actions">
+                        <button class="btn btn-secondary" onclick="clearUpload()">Cancel</button>
+                        <button class="btn btn-primary" onclick="processUpload()">Upload Certificate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Uploaded Certificates Modal -->
+    <div class="modal" id="uploadedCertificatesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-certificate"></i> My Certificates</h3>
+                <button class="close-modal" id="closeCertificatesModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="certificates-list" id="certificatesList">
+                    <!-- Certificates will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="showUploadCertificateModal()">
+                    <i class="fas fa-plus"></i>
+                    Upload New Certificate
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-brain"></i>
+            <p>Generating your adaptive quiz...</p>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div class="notification" id="notification"></div>
+
+    <script src="quiz-engine.js"></script>
+</body>
+</html>

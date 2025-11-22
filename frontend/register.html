@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - AI Quizzer</title>
+    <link rel="stylesheet" href="register.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="background">
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="form-container">
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Quizzer</span>
+                </div>
+                <h1>Join Our Learning Community!</h1>
+                <p>Start your personalized learning journey today</p>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <span>Basic Info</span>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <span>Interests</span>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <span>Complete</span>
+                </div>
+            </div>
+
+            <form id="registerForm" class="auth-form">
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" data-step="1">
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="fullName" name="fullName" placeholder="Full Name" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="regEmail" name="email" placeholder="Email Address" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="regPassword" name="password" placeholder="Create Password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-next" onclick="validateStep1()">Next <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Interests -->
+                <div class="form-step" data-step="2">
+                    <div class="interests-section">
+                        <h3>What are you interested in learning?</h3>
+                        <p>Select your favorite subjects (choose at least 2)</p>
+                        
+                        <div class="interests-grid">
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Mathematics">
+                                <div class="interest-card">
+                                    <i class="fas fa-calculator"></i>
+                                    <span>Mathematics</span>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Computer Science">
+                                <div class="interest-card">
+                                    <i class="fas fa-laptop-code"></i>
+                                    <span>Computer Science</span>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Physics">
+                                <div class="interest-card">
+                                    <i class="fas fa-atom"></i>
+                                    <span>Physics</span>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Chemistry">
+                                <div class="interest-card">
+                                    <i class="fas fa-flask"></i>
+                                    <span>Chemistry</span>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Biology">
+                                <div class="interest-card">
+                                    <i class="fas fa-dna"></i>
+                                    <span>Biology</span>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="History">
+                                <div class="interest-card">
+                                    <i class="fas fa-monument"></i>
+                                    <span>History</span>
+                                </div>
+                            </label>
+                            
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Programming">
+                                <div class="interest-card">
+                                    <i class="fas fa-code"></i>
+                                    <span>Programming</span>
+                                </div>
+                            </label>
+
+                            <label class="interest-checkbox">
+                                <input type="checkbox" name="interests" value="Machine Learning">
+                                <div class="interest-card">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Machine Learning</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-prev" onclick="goToStep(1)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-next" onclick="validateStep2()">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Complete -->
+                <div class="form-step" data-step="3">
+                    <div class="success-section">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Almost Done!</h3>
+                        <p>Review your information and create your account</p>
+                        
+                        <div class="review-info">
+                            <div class="info-item">
+                                <strong>Name:</strong>
+                                <span id="reviewName">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Email:</strong>
+                                <span id="reviewEmail">-</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>Interests:</strong>
+                                <span id="reviewInterests">-</span>
+                            </div>
+                        </div>
+
+                        <div class="terms-agreement">
+                            <label class="terms-checkbox">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="step-actions">
+                        <button type="button" class="btn-prev" onclick="goToStep(2)">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="submit" class="btn-primary" id="registerBtn">
+                            <span class="btn-text">Create Account</span>
+                            <div class="btn-loader">
+                                <div class="spinner"></div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="footer">
+                <p>Already have an account? <a href="login.html" class="signup-link">Sign in here</a></p>
+            </div>
+        </div>
+
+        <div class="features-sidebar">
+            <div class="features-content">
+                <h2>Why Join Us?</h2>
+                
+                <div class="feature-item">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div>
+                        <h3>Personalized Learning</h3>
+                        <p>AI adapts to your unique learning style</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <i class="fas fa-trophy"></i>
+                    <div>
+                        <h3>Earn Achievements</h3>
+                        <p>Get certificates and badges for progress</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <i class="fas fa-chart-line"></i>
+                    <div>
+                        <h3>Track Progress</h3>
+                        <p>Monitor your improvement over time</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <div>
+                        <h3>Join Community</h3>
+                        <p>Learn with students worldwide</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="register.js"></script>
+</body>
+</html>
