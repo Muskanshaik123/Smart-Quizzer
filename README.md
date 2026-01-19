@@ -165,3 +165,8 @@ This project is licensed under the **MIT License** — free to use, modify, and 
 ---
 
 ⭐ If you found this project useful, **don’t forget to star the repo!**
+
+
+## 📄 Project Documentation
+
+👉 https://github.com/Muskanshaik123/Smart-Quizzer/blob/master/Shaik%20muskan.pdf
