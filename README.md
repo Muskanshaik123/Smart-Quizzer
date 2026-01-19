@@ -130,24 +130,6 @@ node server.js
 npm start
 ```
 
----
-
-
-## 📌 Security Notes
-
-* Change `SESSION_SECRET` before deployment
-* Enable HTTPS in production
-* Secure cookies and API keys
-
----
-
-## 🛣️ Future Enhancements
-
-* 📄 Server-side PDF certificate generation
-* 📊 CSV export for analytics
-* 🧪 Unit & integration tests
-* 🎨 Enhanced UI with charts
-* 🤖 Advanced AI explainability for answers
 
 ---
 
